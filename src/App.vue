@@ -1,13 +1,16 @@
 <template>
-  <div id="chart">
-    <apexchart
-      v-if="this.cor"
-      type="radialBar"
-      :options="chartOptions"
-      :series="score"
-      :colors="['#E02721']"
-    />
-    <h1 class="text-status">{{ msg }}</h1>
+  <div id="indicators">
+    <span class="indicator-left">0</span>
+    <div class="chart">
+      <apexchart
+        type="radialBar"
+        :options="chartOptions"
+        :series="[score[0] * 10]"
+        class="my-chart"
+      />
+      <h1 class="text-status">{{ msg }}</h1>
+    </div>
+    <span class="indicator-right">10</span>
   </div>
 </template>
 
@@ -17,20 +20,23 @@ import VueApexCharts from "vue-apexcharts";
 export default {
   name: "App",
   props: {
-    msg: String,
+    score: {
+      type: Array,
+      default: () => [8.9],
+    },
   },
   components: {
     apexchart: VueApexCharts,
   },
   data() {
     return {
-      score: [4],
-    
+      msg: "",
+      series: [1],
       chartOptions: {
-        colors: [this.cor],
+        colors: ["#000"],
         chart: {
           type: "radialBar",
-          offsetY: -20,
+          offsetY: -60,
           sparkline: {
             enabled: true,
           },
@@ -39,80 +45,134 @@ export default {
           radialBar: {
             startAngle: -90,
             endAngle: 90,
-            track: {
-              background: "#f1f1f1",
-              strokeWidth: "20%",
-              margin: 5, // margin is in pixels
+            hollow: {
+              margin: 0,
+              size: "40%",
+              background: "#fff",
+              image: undefined,
+              imageOffsetX: 0,
+              imageOffsetY: 0,
+              position: "front",
               dropShadow: {
                 enabled: true,
-                top: 2,
+                top: 3,
                 left: 0,
-                color: "#999",
-                opacity: 1,
-                blur: 2,
+                blur: 4,
+                opacity: 0.24,
               },
             },
+            track: {
+              background: "#fff",
+              strokeWidth: "-10%",
+              margin: 0, // margin is in pixels
+              dropShadow: {
+                enabled: true,
+                top: -3,
+                left: 0,
+                blur: 4,
+                opacity: 0.35,
+              },
+            },
+
             dataLabels: {
+              show: true,
               name: {
+                offsetY: 10,
                 show: false,
+                color: "#888",
+                fontSize: "17px",
               },
               value: {
-                offsetY: -2,
-                fontSize: "22px",
+                offsetY: -10,
+                formatter: function (val) {
+                  return val / 10;
+                },
+                color: "#333",
+                fontSize: "100px",
+                show: true,
               },
             },
           },
         },
-        grid: {
-          padding: {
-            top: -10,
-          },
+        stroke: {
+          lineCap: "round",
         },
-
-        labels: ["Average Results"],
       },
     };
   },
   created() {
-    this.score <= 4.4
-      ? (this.msg = "Baixo")
-      : this.score > 4.4 && this.score <= 5.4
-      ? (this.msg = "Ok")
-      : this.score > 5.4 && this.score <= 7.4
-      ? (this.msg = "Bom")
-      : this.score > 7.4 && this.score <= 8.9
-      ? (this.msg = "Muito Bom")
-      : this.score > 8.9 && this.score <= 10.0
-      ? (this.msg = "Incrível")
-      : null;
-  },
-  computed: {
-    cor:  () => {
-      if (this.score >= 0 && this.score < 5) return "#E02721";
-      if (this.score < 7.5) {
-        return "#F7CA14";
-      }
-      if (this.score <= 10) {
-        return "#31EB70";
-      }
-    },
+    if (this.score <= 4.4) {
+      this.msg = "Baixo";
+    } else if (this.score > 4.4 && this.score <= 5.4) {
+      this.msg = "Ok";
+    } else if (this.score > 5.4 && this.score <= 7.4) {
+      this.msg = "Bom";
+    } else if (this.score > 7.4 && this.score <= 8.9) {
+      this.msg = "Muito Bom";
+    } else if (this.score > 8.9 && this.score <= 10.0) {
+      this.msg = "Incrível";
+    }
+
+    if (this.score >= 0 && this.score < 5) {
+      this.chartOptions.colors = ["#E02721"];
+    } else if (this.score < 7.5) {
+      this.chartOptions.colors = ["#F7CA14"];
+    } else if (this.score <= 10) {
+      this.chartOptions.colors = ["#31EB70"];
+    }
   },
 };
 </script>
 
 <style>
-#chart {
+* {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen,
+    Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
+  color: #222;
+}
+
+#indicators {
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  flex-direction: row;
+  width: 70%;
+  height: 90%;
+  margin-top: -50px;
+  padding-top: -50px;
+  /* background: red; */
+  margin: 0 auto;
+}
+
+.chart {
   display: flex;
   align-items: center;
   justify-content: center;
   flex-direction: column;
-  width: 100%;
-  min-height: 90%;
-  margin-top: -10px;
+}
+.mychart {
+  width: 100px;
 }
 
 .text-status {
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen,
     Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
+  color: #222;
+  font-size: 50px;
+  margin-top: -50px;
+}
+
+.indicator-left {
+  position: relative;
+  left: 20%;
+  font-size: 30px;
+  color: #222;
+}
+
+.indicator-right {
+  position: relative;
+  right: 20%;
+  font-size: 30px;
+  color: #222;
 }
 </style>
