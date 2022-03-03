@@ -11,7 +11,7 @@ global.ResizeObserver = jest.fn().mockImplementation(() => ({
 
 describe('Render correct message for each score  ', () => {
 
-  test('render the correct msg:Baixo', async () => {
+  test('render the correct msg:"Baixo" para score <= 4.4', async () => {
 
     const wrapper = mount(App,{ propsData: {
       score: [4]
@@ -24,7 +24,7 @@ describe('Render correct message for each score  ', () => {
     expect(textStatus.element.textContent).toContain('Baixo')
   })
 
-  test('render the correct msg: Ok', async () => {
+  test('render the correct msg: OK para score > 4.4 e <= 5.4', async () => {
 
     const wrapper = mount(App,{ propsData: {
       score: [5]

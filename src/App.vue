@@ -22,7 +22,7 @@ export default {
   props: {
     score: {
       type: Array,
-      default: () => [8.9],
+      default: () => [9.0],
     },
   },
   components: {
